@@ -1,18 +1,57 @@
 aid: bezero-carbon
 name: BeZero Carbon
-description: 'BeZero Carbon is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'BeZero Carbon is a global carbon ratings agency for the Voluntary Carbon Market, founded
+  in London in 2020. It publishes an independent, eight-point BeZero Carbon Rating (AAA to D) expressing
+  the likelihood that a given carbon credit achieves a tonne of CO2e avoided or removed, alongside risk
+  factor scores, summary analysis, methodology assessments and reference data across forestry, blue carbon,
+  soil and agriculture, cookstoves, engineered removals and superpollutant projects. The BeZero Ratings
+  API (v3, OAuth 2.0 client credentials) lets exchanges, marketplaces, brokers, data providers and
+  corporate buyers pull ratings, project reference data and premium risk factor scores directly into
+  their own platforms, and its ratings are distributed through Bloomberg, ICE, CUSIP and LSEG.'
+image: https://bezerocarbon.com/images/metadata-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/bezero-carbon/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-07'
 modified: '2026-08-07'
 tags:
 - Company
-apis: []
+- Carbon Ratings
+- Carbon Markets
+- Climate
+- Sustainability
+- ESG
+- Ratings
+- Reference Data
+- Market Intelligence
+- Risk Analysis
+apis:
+- aid: bezero-carbon-ratings-api
+  name: BeZero Ratings API
+  description: 'The BeZero Ratings API returns BeZero Carbon project ratings in a standard JSON response.
+    It exposes a paginated list of ratings (AAA to D, plus Withdrawn), each carrying the rating watch
+    status, vintage range, summary analysis and a platform URL; a paginated list of rated projects with
+    accreditor, registry ID, sector group, sector, sub-sector and ISO 3166-1 alpha-3 location; and a
+    premium risk-factors endpoint returning additionality, carbon accounting and permanence scores.
+    Authentication is OAuth 2.0 client credentials against the BeZero token server, with four scopes.
+    The list endpoints support incremental sync via a changedSince filter over dataLastUpdatedAt, and
+    clients opt into behaviour with the Accept-API-Version header (3.0 default, 3.1 supported).'
+  humanURL: https://api-docs.bezerocarbonmarkets.com/
+  baseURL: https://api.bezerocarbonmarkets.com/v3
+  tags:
+  - Carbon Ratings
+  - Carbon Credits
+  - Climate
+  - Ratings
+  - Reference Data
+  properties:
+  - type: OpenAPI
+    url: openapi/bezero-carbon-ratings-openapi.yml
+  - type: APIReference
+    url: https://api-docs.bezerocarbonmarkets.com/
+  - type: Documentation
+    url: https://api-docs.bezerocarbonmarkets.com/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +59,67 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://bezerocarbon.com/
+- type: DeveloperPortal
+  url: https://api-docs.bezerocarbonmarkets.com/
+- type: Documentation
+  url: https://api-docs.bezerocarbonmarkets.com/
+- type: APIReference
+  url: https://api-docs.bezerocarbonmarkets.com/
+- type: GettingStarted
+  url: https://api-docs.bezerocarbonmarkets.com/#section/Authentication-and-credential-provision
+- type: Support
+  url: mailto:engineering@bezerocarbon.com
+- type: Blog
+  url: https://bezerocarbon.com/insights
+- type: GitHubOrganization
+  url: https://github.com/BeZeroCarbon
+- type: SignUp
+  url: https://bezerocarbonmarkets.com/
+- type: TermsOfService
+  url: https://legal.bezerocarbon.com/legal-hub/terms-of-use-976d0f8d
+- type: PrivacyPolicy
+  url: https://legal.bezerocarbon.com/legal-hub/privacy-policy-b92ddd45
+- type: OpenAPI
+  url: openapi/bezero-carbon-ratings-openapi.yml
+- type: Authentication
+  url: authentication/bezero-carbon-authentication.yml
+- type: OAuthScopes
+  url: scopes/bezero-carbon-scopes.yml
+- type: DomainSecurity
+  url: security/bezero-carbon-domain-security.yml
+- type: Conventions
+  url: conventions/bezero-carbon-conventions.yml
+- type: ErrorCatalog
+  url: errors/bezero-carbon-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/bezero-carbon-lifecycle.yml
+- type: Deprecation
+  url: https://legal.bezerocarbon.com/legal-hub/product-specific-terms-ffc0b2c9
+- type: Conformance
+  url: conformance/bezero-carbon-conformance.yml
+- type: DataModel
+  url: data-model/bezero-carbon-data-model.yml
+- type: Examples
+  url: examples/bezero-carbon-examples.yml
+- type: RateLimits
+  url: rate-limits/bezero-carbon-rate-limits.yml
+- type: Packages
+  url: packages/bezero-carbon-packages.yml
+- type: WellKnown
+  url: well-known/bezero-carbon-well-known.yml
+- type: MCPServer
+  url: mcp/bezero-carbon-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/bezero-carbon-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/bezero-carbon-llms.txt
+- type: Overlay
+  url: overlays/bezero-carbon-ratings-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-07'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1
