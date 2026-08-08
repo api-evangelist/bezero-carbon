@@ -1,0 +1,94 @@
+generated: '2026-08-07'
+method: derived
+source: openapi/bezero-carbon-ratings-openapi.yml
+note: >-
+  The spec declares no components.schemas — every response body is an inline anonymous
+  schema — so the entities below are derived from the inline response shapes and from the
+  id-reference fields and relative links that join them.
+entities:
+- name: Project
+  description: A carbon project BeZero has rated.
+  returned_by: [listProjects]
+  identifier: {field: id, description: BeZero Carbon unique identifier for the project, example: 'ABC123'}
+  fields:
+  - {name: id, type: string, required: true}
+  - {name: accreditor, type: string, required: true, description: human-readable name of the accreditor used by the project}
+  - {name: registryID, type: string, required: true, description: ID of the project as described in official project documentation}
+  - {name: name, type: string, required: true}
+  - {name: sectorGroup, type: string, required: true, example: Nature-Based Solutions}
+  - {name: sector, type: string, required: true, example: Blue Carbon}
+  - {name: subSector, type: string, required: true, example: Mangroves}
+  - {name: location, type: string, required: true, format: ISO 3166-1 alpha-3}
+  - {name: dataLastUpdatedAt, type: string, required: true, format: ISO 8601 datetime}
+- name: Rating
+  description: BeZero's opinion on the likelihood a credit from a project achieves a tonne of CO2e avoided or removed.
+  returned_by: [listRatings]
+  identifier: {field: id, description: BeZero Carbon unique identifier for the rating}
+  fields:
+  - {name: id, type: string, required: true}
+  - {name: projectID, type: string, required: true, description: identifier of the project this rating applies to}
+  - {name: accreditor, type: string, required: true}
+  - {name: registryID, type: string, required: true}
+  - {name: vintages, type: array, required: true, description: periods for which the rating is applicable}
+  - {name: rating, type: string, required: true, enum: [AAA, AA, A, BBB, BB, B, C, D, Withdrawn]}
+  - {name: onRatingsWatch, type: boolean, required: true, description: rating is under review and may be upgraded, downgraded or reaffirmed}
+  - {name: summaryAnalysis, type: string, required: true}
+  - {name: platformURL, type: string, required: true, description: fully-qualified URL to view the project on the BeZero Carbon Platform}
+  - {name: dataLastUpdatedAt, type: string, required: true, format: ISO 8601 datetime}
+  - {name: links, type: object, required: true, description: relative URLs to ratingDetails and riskFactors}
+- name: Vintage
+  description: A date range within which a rating applies to the project's credits.
+  embedded_in: Rating
+  fields:
+  - {name: startDate, type: string, format: ISO 8601 date}
+  - {name: endDate, type: string, format: ISO 8601 date}
+- name: RatingDetails
+  description: Analysis summary for a single rating. Deprecated — now inlined on Rating.
+  returned_by: [getRatingDetails]
+  identifier: {field: id}
+  fields:
+  - {name: id, type: string, required: true}
+  - {name: summaryAnalysis, type: string, required: true}
+  deprecated: true
+- name: RiskFactors
+  description: Premium per-rating risk factor scores.
+  returned_by: [getRiskFactors]
+  identifier: {field: id}
+  tier: premium
+  fields:
+  - {name: id, type: string, required: true}
+  - {name: additionality.score, type: string, required: true, enum: [aaa, aa, a, bbb, bb, b, c, d, '']}
+  - {name: carbonAccounting.score, type: string, required: true, enum: [aaa, aa, a, bbb, bb, b, c, d, '']}
+  - {name: permanence.score, type: string, required: true, enum: [aaa, aa, a, bbb, bb, b, c, d, '']}
+relationships:
+- {from: Rating, to: Project, kind: belongs_to, via: projectID, confidence: high, evidence: 'projectID described as "the BeZero Carbon unique identifier for the project this rating applies to"'}
+- {from: Project, to: Rating, kind: has_many, via: projectID, confidence: high, evidence: 'Accept-API-Version 3.1 returns multiple ratings for a single project; 3.0 returns only the first published rating'}
+- {from: Rating, to: Vintage, kind: has_many, via: vintages, confidence: high, evidence: inline array on the rating}
+- {from: Rating, to: RatingDetails, kind: has_one, via: links.ratingDetails, confidence: high, evidence: 'relative URL GET /ratings/{ratingID}'}
+- {from: Rating, to: RiskFactors, kind: has_one, via: links.riskFactors, confidence: high, evidence: 'relative URL GET /ratings/{ratingID}/risk-factors'}
+envelopes:
+- {operation: listRatings, root: ratings, links: [queryLatestChanges, nextPage, prevPage]}
+- {operation: listProjects, root: projects, links: [queryLatestChanges, nextPage, prevPage]}
+id_conventions:
+  bezero_id: >-
+    Opaque string. Published examples are ABC123, DEF123 and GH1000000100 — no fixed prefix
+    or length, so treat as opaque and never construct one.
+  registry_id: >-
+    The identifier the project carries in its own registry's documentation (example
+    GH_1000000_100 where the BeZero id is GH1000000100). Not interchangeable with the BeZero id.
+  join_key: >-
+    Rating.projectID joins to Project.id. Rating.registryID and Project.registryID both carry the
+    registry-side identifier and can be used to reconcile against a registry export.
+change_tracking:
+  field: dataLastUpdatedAt
+  present_on: [Project, Rating]
+  note: >-
+    Any change to data returned by the ratings list or rating details bumps dataLastUpdatedAt,
+    so it is the single watermark for incremental sync across both entities.
+gaps:
+- >-
+  No components.schemas — every entity is an anonymous inline schema, so nothing in the spec is
+  reusable, nameable, or generatable into typed models without hand-naming it first.
+- >-
+  There is no operation to fetch a single project by id; Project is only reachable by paging
+  the full list or filtering with changedSince.

@@ -1,0 +1,55 @@
+generated: '2026-08-07'
+method: searched
+source: npm registry search, PyPI, pkg.go.dev, RubyGems, Packagist, crates.io, NuGet, Maven Central, github.com/BeZeroCarbon
+summary:
+  client_sdks: 0
+  official_packages: 1
+  note: >-
+    BeZero publishes no client SDK for the BeZero Ratings API in any language. The one
+    first-party package on a public registry is an internal data-tooling MCP server for
+    Metabase, not a client library for the Ratings API. Integrators call the REST API
+    directly with a generic OAuth 2.0 client-credentials HTTP client.
+packages:
+- language: javascript
+  registry: npm
+  name: '@bezerocarbon/metabase-mcp-server'
+  version: 1.2.8
+  url: https://www.npmjs.com/package/@bezerocarbon/metabase-mcp-server
+  install: npm install @bezerocarbon/metabase-mcp-server
+  repository: https://github.com/BeZeroCarbon/metabase-mcp-server
+  license: ISC
+  author: Tobias Richter <tobias.richter@bezerocarbon.com>
+  published: '2026-05-20'
+  updated: '2026-05-21'
+  official: true
+  is_api_client: false
+  covers: Metabase (BeZero's internal BI/analytics stack)
+  note: >-
+    A Model Context Protocol server for Metabase, forked from @getnao/metabase-mcp-server
+    and republished under BeZero's own npm scope by a BeZero engineer. It is first-party
+    but it is NOT a client for the BeZero Ratings API and exposes no BeZero rating data.
+registries_checked:
+- {registry: npm, query: bezerocarbon, result: 1 package (scoped, first-party, not an API client)}
+- {registry: npm, query: bezero, result: '@bezero/video-frame — unrelated third-party publisher'}
+- {registry: pypi, query: bezero, result: none}
+- {registry: rubygems, query: bezero, result: none}
+- {registry: packagist, query: bezero, result: none}
+- {registry: crates.io, query: bezero, result: none}
+- {registry: nuget, query: bezero, result: none}
+- {registry: maven-central, query: bezero, result: none}
+- {registry: pkg.go.dev, query: bezero, result: none}
+github_org:
+  url: https://github.com/BeZeroCarbon
+  public_repos: 3
+  repos:
+  - {name: auth, language: Go, description: Authenticator via oauth2, fork: false}
+  - {name: clay-foundation-model, description: The Clay Foundation Model (in development), fork: true}
+  - {name: prefect-mcp-server, description: Prefect MCP server, fork: true, parent: PrefectHQ/prefect-mcp-server}
+  note: >-
+    No Ratings API SDK, no example client, and no OpenAPI definition is published in the
+    BeZero GitHub organisation.
+gaps:
+- >-
+  No official client library in any language. A first-party SDK (or even a published
+  Postman collection) would remove the OAuth 2.0 client-credentials plumbing every
+  integrator currently writes by hand.

@@ -1,0 +1,628 @@
+openapi: 3.0.0
+servers:
+- url: https://api.bezerocarbonmarkets.com/v3
+info:
+  title: BeZero Ratings API
+  version: 3.0.0
+  x-logo:
+    url: ./logo.svg
+    altText: BeZero logo
+    href: https://bezerocarbon.com
+  contact:
+    name: BeZero Engineering
+    email: engineering@bezerocarbon.com
+  description: '[BeZero Ratings API Migration Guide v2 to v3](./bezero-api-migration-guide-v3.pdf)
+
+    # Introduction to the Ratings API
+
+    The BeZero Ratings API provides information about project ratings  in a standard JSON response. The API is authenticated
+    using OAuth 2.0.
+
+
+    With our API integration technology, participants can display the BeZero Carbon Rating and rating summary on their platform.
+    Whether an exchange, a data provider, a marketplace or a broker, with our API solution you can provide end users with
+    BeZero Carbon ratings.
+
+    ## BeZero Rating Scale
+
+    The BeZero Carbon Rating represents BeZero’s opinion on the likelihood that a given credit achieves a tonne of CO₂e avoided
+    or removed from the atmosphere. With ‘AAA’ representing the highest likelihood, and ‘D’ representing the lowest, the rating
+    scale is fully aligned with financial market standards, making it easy to interpret. On the API, the rating will be returned
+    on an 8-point scale from AAA to D.
+
+    ## BeZero Watch Status
+
+    BeZero Carbon ratings can be put ‘On Watch’ if new information comes to light. A process of review begins and at the end
+    of this process different outcomes are possible:
+
+
+    - upgrade the rating to a level higher than at present
+
+    - downgrade the rating to a level lower than at present or
+
+    - reaffirm the rating at current levels.
+
+
+    Simultaneously, the rating will be ‘removed from watch’. On the API, the watch status will be returned as a boolean True/False.
+    The watch status needs to be shown next to the rating if that project is on watch and until that watch status is removed.
+    The API will provide the updated rating along with the watch status.
+
+    ## BeZero Withdrawn Ratings
+
+    BeZero Carbon Ratings are assigned only to projects meeting a predefined eligibility criteria. These include documented
+    tests on additionality, formal audit processes and continued public availability of all relevant information. BeZero Carbon
+    Ratings may be withdrawn in case there is a material impairment in the project’s ability to meet any of the eligibility
+    criteria including partial or complete withdrawal or unavailability of relevant information in public domain. BeZero may
+    also withdraw its ratings in case BeZero Carbon becomes aware of any risks with respect to the ownership of the project
+    and/or usage rights. All rating withdrawals are published on the BeZero API. For ratings that have been withdrawn, the
+    API will return a Withdrawn status.
+
+    ## BeZero Rating Vintage Range
+
+    The BeZero rating applies to credits within the vintage range returned by the API as the Vintage Start and End date.
+
+
+    For more insight into the BeZero Carbon Rating methodology please refer to https://bezerocarbon.com/ratings/resources
+
+    # Authentication and credential provision
+
+    A token can be acquired using the standard OAuth 2.0 authorisation flow from the BeZero Token Server using the access
+    keys we provide. BeZero will provide a Production set of Client ID and Client Secrets that will allow you to authenticate
+    with the Ratings API.
+
+    <!-- Redoc-Inject: <security-definitions> -->
+
+    # Rate limiting
+
+    The API is rate limited to 1000 requests per minute, any more requests than this will result in a 429 Too Many Requests,
+    it allows retry after 1 minute.
+
+    # API version selection
+
+    Clients can opt into changes by attaching a `Accept-API-Version` header.
+
+    If the header is omitted, the API defaults to `3.0` behaviour. Currently supported values are `3.0` and `3.1`.
+
+    Requests with an unsupported `Accept-API-Version` value will be rejected with `400 Bad Request`. Responses include the
+    resolved `Accept-API-Version` header so clients can confirm which compatibility version was applied.
+
+    `3.0` will exclude all but the first published rating for a project. `3.1` will return multiple ratings for a single project,
+    if any have been published.
+
+    '
+components:
+  parameters:
+    AcceptApiVersion:
+      in: header
+      name: Accept-API-Version
+      required: false
+      schema:
+        type: string
+        enum:
+        - '3.0'
+        - '3.1'
+      description: 'Optional compatibility version. If omitted, the API defaults to `3.0` behavior.
+
+        '
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: This API uses OAuth 2 with Client Credentials
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.bezerocarbonmarkets.com/oauth2/token
+          scopes:
+            bcm/v3.ratings:list: list ratings
+            bcm/v3.ratings:details: read rating details
+            bcm/v3.ratings:riskFactors: read rating risk factors
+            bcm/v3.projects:list: list projects
+paths:
+  /ratings:
+    get:
+      description: 'The ratings endpoint returns a list of BeZero ratings. Each page returns 100 ratings before it is paginated
+        and the list is filterable by the `dataLastUpdatedAt` timestamp. Change to any of the data returned by ratings list
+        or ratings details will update the `dataLastUpdatedAt` timestamp. You can filter the list using `changedSince` to
+        only return any changes that may have occurred since the last query, to minimise API calls. `queryLatestChanges` is
+        provided at the end of each paginated page to provide a timestamp of when the API was last called. BeZero ratings
+        can change or be put on watch at any time and so polling for updates at least once per day is recommended.
+
+        '
+      summary: List Ratings
+      operationId: listRatings
+      parameters:
+      - $ref: '#/components/parameters/AcceptApiVersion'
+      - in: query
+        name: changedSince
+        description: optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed
+          since provided date
+        required: false
+        schema:
+          type: string
+        example: '2024-07-10T09:46:11Z'
+      - in: query
+        name: page
+        description: optional pagination value
+        required: false
+        schema:
+          type: integer
+        example: 1
+      security:
+      - OAuth2:
+        - bcm/v3.ratings:list
+      responses:
+        '200':
+          description: 'List ratings for projects ordered by dataLastUpdatedAt and projectID.
+
+            Note that only the first published rating for each project will be included unless the `Accept-API-Version: 3.1`
+            header is attached.
+
+            '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - projectID
+                      - accreditor
+                      - registryID
+                      - vintages
+                      - rating
+                      - onRatingsWatch
+                      - summaryAnalysis
+                      - platformURL
+                      - dataLastUpdatedAt
+                      - links
+                      properties:
+                        id:
+                          type: string
+                          description: The BeZero Carbon unique identifier for this rating
+                        projectID:
+                          type: string
+                          description: The BeZero Carbon unique identifier for the project this rating applies to
+                        accreditor:
+                          type: string
+                          description: The human-readable name of the accreditor used by the project
+                        registryID:
+                          type: string
+                          description: ID of project as described in official project documentation
+                        vintages:
+                          description: Periods of time for the project with which the rating is applicable
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              startDate:
+                                type: string
+                                description: ISO 8601 date string for the date this rating begins being applicable
+                              endDate:
+                                type: string
+                                description: ISO 8601 date string for the date this rating stops being applicable
+                        rating:
+                          type: string
+                          enum:
+                          - AAA
+                          - AA
+                          - A
+                          - BBB
+                          - BB
+                          - B
+                          - C
+                          - D
+                          - Withdrawn
+                          description: The BeZero Carbon rating for the project.
+                        onRatingsWatch:
+                          type: boolean
+                          description: Indicates whether the rating for this project is on 'rating watch'. If information
+                            comes to light which could potentially affect a rating, BeZero could place the rating on 'rating
+                            watch'. The new information is then reviewed in detail and an updated rating will be published.
+                        summaryAnalysis:
+                          type: string
+                          description: Summary of rating analysis for this rating.
+                        platformURL:
+                          type: string
+                          description: Fully-qualified URL to view project on BeZero Carbon Platform
+                        dataLastUpdatedAt:
+                          type: string
+                          description: ISO 8601 datetime string for when this rating's data was most recently changed
+                        links:
+                          type: object
+                          required:
+                          - ratingDetails
+                          - riskFactors
+                          properties:
+                            ratingDetails:
+                              type: string
+                              description: Relative URL for fetching additional details about this rating
+                            riskFactors:
+                              type: string
+                              description: Relative URL for fetching this rating's risk factor scores. The risk factors endpoint
+                                is a Premium endpoint.
+                  links:
+                    type: object
+                    properties:
+                      queryLatestChanges:
+                        type: string
+                        description: Relative URL for future use when wanting to query all ratings that have changed since
+                          this current request was made
+                      nextPage:
+                        type: string
+                        nullable: true
+                        description: Paginated page number
+                      prevPage:
+                        type: string
+                        nullable: true
+                        description: Paginated page number
+                example:
+                  ratings:
+                  - id: ABC123
+                    projectID: ABC123
+                    accreditor: Full Accreditor Name
+                    registryID: '123'
+                    vintages:
+                    - startDate: '2017-04-28'
+                      endDate: '2020-11-30'
+                    - startDate: '2020-12-01'
+                      endDate: '2021-11-30'
+                    rating: BB
+                    onRatingsWatch: false
+                    summaryAnalysis: Example summary analysis for this rating.
+                    platformURL: https://bezerocarbonmarkets.com/projects/ABC123
+                    dataLastUpdatedAt: '2024-09-09T10:00:00Z'
+                    links:
+                      ratingDetails: /ratings/ABC123
+                      riskFactors: /ratings/ABC123/risk-factors
+                  - id: ABC123-POST-JJK
+                    projectID: ABC123
+                    accreditor: Full Accreditor Name
+                    registryID: '123'
+                    vintages:
+                    - startDate: '2021-12-01'
+                      endDate: '2022-11-30'
+                    rating: AA
+                    onRatingsWatch: true
+                    summaryAnalysis: Example summary analysis for this rating.
+                    platformURL: https://bezerocarbonmarkets.com/projects/ABC123
+                    dataLastUpdatedAt: '2024-09-08T09:00:00Z'
+                    links:
+                      ratingDetails: /ratings/ABC123-POST-JJK
+                      riskFactors: /ratings/ABC123-POST-JJK/risk-factors
+                  - id: DEF123
+                    projectID: DEF123
+                    accreditor: Full Accreditor Name
+                    registryID: DEF123
+                    vintages:
+                    - startDate: '2010-01-01'
+                      endDate: '2015-12-31'
+                    rating: A
+                    onRatingsWatch: false
+                    summaryAnalysis: Example summary analysis for this rating.
+                    platformURL: https://bezerocarbonmarkets.com/projects/DEF123
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                    links:
+                      ratingDetails: /ratings/DEF123
+                      riskFactors: /ratings/DEF123/risk-factors
+                  - id: GH1000000100
+                    projectID: GH1000000100
+                    accreditor: Full Accreditor Name
+                    registryID: GH_100000_100
+                    vintages:
+                    - startDate: '2012-01-01'
+                      endDate: '2020-12-31'
+                    rating: AA
+                    onRatingsWatch: false
+                    summaryAnalysis: Example summary analysis for this rating.
+                    platformURL: https://bezerocarbonmarkets.com/projects/GH1000000100
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                    links:
+                      ratingDetails: /ratings/GH1000000100
+                      riskFactors: /ratings/GH1000000100/risk-factors
+                  links:
+                    queryLatestChanges: /ratings?changedSince=2024-09-06T09:00:00Z
+                    nextPage: /ratings?page=2
+                    prevPage: /ratings?page=1
+        '403':
+          description: unauthorised
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-After:
+              description: seconds to wait before retrying
+              schema:
+                type: integer
+      x-code-samples:
+      - lang: shell
+        label: curl
+        source: "TOKEN=\"$(curl https://login.bezerocarbonmarkets.com/oauth2/token -d \"grant_type=client_credentials\" \\\
+          \n    -d \"client_id=<CLIENT_ID>\" \\\n    -d \"client_secret=<CLIENT_SECRET>\" \\\n    -d \"scope=bcm/v3.ratings:list\"\
+          \ | jq -r .access_token)\"\n\ncurl -H\"Authorization: Bearer $TOKEN\" -H\"Accept-API-Version: 3.1\" https://api.bezerocarbonmarkets.com/v3/ratings\n"
+  /ratings/{ratingID}:
+    get:
+      deprecated: true
+      description: 'Deprecated. The `summaryAnalysis` field is now included in the `GET /ratings` list response, so clients
+        should use the list endpoint instead of this endpoint.
+
+        '
+      summary: Get Rating Details
+      operationId: getRatingDetails
+      parameters:
+      - $ref: '#/components/parameters/AcceptApiVersion'
+      - name: ratingID
+        in: path
+        description: The BeZero Carbon unique identifier for this rating
+        schema:
+          type: string
+        required: true
+      security:
+      - OAuth2:
+        - bcm/v3.ratings:details
+      responses:
+        '200':
+          description: Additional details of a rating
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                - summaryAnalysis
+                properties:
+                  id:
+                    type: string
+                    description: The BeZero Carbon unique identifier for this rating
+                  summaryAnalysis:
+                    type: string
+                    description: The analysis summary for the rating.
+        '403':
+          description: unauthorised
+        '404':
+          description: rating not found
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-After:
+              description: seconds to wait before retrying
+              schema:
+                type: integer
+  /ratings/{ratingID}/risk-factors:
+    get:
+      description: 'The risk factors endpoint is a Premium endpoint that returns a risk factor score for each BeZero rated
+        project. The risk factors can have a score of aaa, aa, a, bbb, bb, b, c, d. Ratings, risk factors and summary analysis
+        are always updated together so users are recommended to get the rating, rating detail and risk factors when requesting
+        updates. Otherwise rating, rating summary and risk factor scores will be out of sync.
+
+        '
+      summary: 'Premium: Risk factors'
+      operationId: getRiskFactors
+      parameters:
+      - $ref: '#/components/parameters/AcceptApiVersion'
+      - name: ratingID
+        in: path
+        description: The BeZero Carbon unique identifier for this rating
+        schema:
+          type: string
+        required: true
+      security:
+      - OAuth2:
+        - bcm/v3.ratings:riskFactors
+      responses:
+        '200':
+          description: Additional details of a rating
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                - additionality
+                - carbonAccounting
+                - permanence
+                properties:
+                  id:
+                    type: string
+                    description: The BeZero Carbon unique identifier for this rating
+                  additionality:
+                    type: object
+                    properties:
+                      score:
+                        type: string
+                        enum:
+                        - aaa
+                        - aa
+                        - a
+                        - bbb
+                        - bb
+                        - b
+                        - c
+                        - d
+                        - ''
+                        description: The rating's risk factor score for Additionality
+                  carbonAccounting:
+                    type: object
+                    properties:
+                      score:
+                        type: string
+                        enum:
+                        - aaa
+                        - aa
+                        - a
+                        - bbb
+                        - bb
+                        - b
+                        - c
+                        - d
+                        - ''
+                        description: The rating's risk factor score for Carbon Accounting
+                  permanence:
+                    type: object
+                    properties:
+                      score:
+                        type: string
+                        enum:
+                        - aaa
+                        - aa
+                        - a
+                        - bbb
+                        - bb
+                        - b
+                        - c
+                        - d
+                        - ''
+                        description: The rating's risk factor score for Permanence
+                example:
+                  id: ABC123
+                  additionality:
+                    score: aa
+                  carbonAccounting:
+                    score: c
+                  permanence:
+                    score: bbb
+        '403':
+          description: unauthorised
+        '404':
+          description: rating not found
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-After:
+              description: seconds to wait before retrying
+              schema:
+                type: integer
+  /projects:
+    get:
+      description: 'This endpoint returns projects for which BeZero has a rating. It is sorted by `dataLastUpdatedAt` and
+        paginated into 100 projects. BeZero can add new ratings at any time so BeZero recommends calling this endpoint at
+        the same cadence as the ratings list, using the `changedSince` functionality to filter for any changes.
+
+        '
+      summary: List Projects
+      operationId: listProjects
+      parameters:
+      - $ref: '#/components/parameters/AcceptApiVersion'
+      - in: query
+        name: changedSince
+        description: optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed
+          since provided date
+        required: false
+        schema:
+          type: string
+        example: '2024-07-10T09:46:11Z'
+      - in: query
+        name: page
+        description: optional pagination value
+        required: false
+        schema:
+          type: integer
+        example: 1
+      security:
+      - OAuth2:
+        - bcm/v3.projects:list
+      responses:
+        '200':
+          description: List project information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - accreditor
+                      - registryID
+                      - name
+                      - sectorGroup
+                      - sector
+                      - subSector
+                      - location
+                      - dataLastUpdatedAt
+                      properties:
+                        id:
+                          type: string
+                          description: The BeZero Carbon unique identifier for the project this project applies to
+                        accreditor:
+                          type: string
+                          description: The human-readable name of the accreditor used by the project
+                        registryID:
+                          type: string
+                          description: ID of project as described in official project documentation
+                        sectorGroup:
+                          type: string
+                          description: Sector group of the project
+                        sector:
+                          type: string
+                          description: Sector of the project
+                        subSector:
+                          type: string
+                          description: Sub-sector of the project
+                        location:
+                          type: string
+                          description: ISO 3166-1 alpha-3 country code for where this project is located
+                        dataLastUpdatedAt:
+                          type: string
+                          description: ISO 8601 datetime string for when this project's data was most recently changed
+                  links:
+                    type: object
+                    properties:
+                      queryLatestChanges:
+                        type: string
+                        description: Relative URL for future use when wanting to query all ratings that have changed since
+                          this current request was made
+                      nextPage:
+                        type: string
+                        nullable: true
+                        description: Paginated page number
+                      prevPage:
+                        type: string
+                        nullable: true
+                        description: Paginated page number
+                example:
+                  projects:
+                  - id: ABC123
+                    accreditor: Full Accreditor Name
+                    registryID: '123'
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Blue Carbon
+                    subSector: Mangroves
+                    location: MMR
+                    dataLastUpdatedAt: '2024-09-08T09:00:00Z'
+                  - id: DEF123
+                    accreditor: Full Accreditor Name
+                    registryID: DEF123
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Soil Carbon & Agriculture
+                    subSector: Peatlands
+                    location: IDN
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                  - id: GH1000000100
+                    accreditor: Full Accreditor Name
+                    registryID: GH_1000000_100
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Forestry
+                    subSector: Afforestation, Reforestation & Restoration
+                    location: BRA
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                  links:
+                    queryLatestChanges: /projects?changedSince=2024-09-06T09:00:00Z
+                    nextPage: /projects?page=2
+                    prevPage: /projects?page=1
+        '403':
+          description: unauthorised
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-After:
+              description: seconds to wait before retrying
+              schema:
+                type: integer

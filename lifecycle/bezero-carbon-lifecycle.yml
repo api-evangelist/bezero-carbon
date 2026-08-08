@@ -1,0 +1,73 @@
+generated: '2026-08-07'
+method: searched
+source: https://legal.bezerocarbon.com/legal-hub/product-specific-terms-ffc0b2c9
+also: https://api-docs.bezerocarbonmarkets.com/
+api: BeZero Ratings API
+versioning:
+  scheme: uri-path + request header
+  current: v3
+  base_url: https://api.bezerocarbonmarkets.com/v3
+  compat_header: Accept-API-Version
+  compat_default: '3.0'
+  compat_supported: ['3.0', '3.1']
+  compat_echoed: true
+  docs: https://api-docs.bezerocarbonmarkets.com/#section/API-version-selection
+  note: >-
+    Two-level versioning. The major version is in the path (/v3); minor behavioural changes
+    are opt-in via the Accept-API-Version header, and the resolved value is echoed on the
+    response so a client can confirm which compatibility mode applied. 3.0 returns only the
+    first published rating per project; 3.1 returns multiple ratings per project.
+  prior_versions:
+    v2: {status: retired, evidence: 'GET https://api.bezerocarbonmarkets.com/v2/ratings returned 404 on 2026-08-07'}
+  migration_guide: https://api-docs.bezerocarbonmarkets.com/bezero-api-migration-guide-v3.pdf
+deprecation:
+  policy_published: true
+  policy_url: https://legal.bezerocarbon.com/legal-hub/product-specific-terms-ffc0b2c9
+  advance_notice: 3 months
+  legacy_support_window: not less than 6 months from the issue date of the superseding version
+  quoted:
+  - "BeZero will give the Customer at least 3 months' prior notice of deprecating a legacy version of the BeZero API."
+  - "Previous versions of the BeZero API can be used to access the Information for a period of not less than 6 months from the issue date of the superseding version."
+  - "BeZero may modify the BeZero API at any time provided such modifications do not materially degrade the performance of, or interfere with the existing functionality of, the BeZero API."
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    The deprecation commitment is real and quantified, but it lives in the commercial terms,
+    not in the developer reference, and it is not signalled in-band — no RFC 8594 Sunset or
+    Deprecation response header is documented.
+deprecated_operations:
+- operation: openapi/bezero-carbon-ratings-openapi.yml#getRatingDetails
+  path: GET /ratings/{ratingID}
+  reason: >-
+    "Deprecated. The summaryAnalysis field is now included in the GET /ratings list response,
+    so clients should use the list endpoint instead of this endpoint."
+  replacement: openapi/bezero-carbon-ratings-openapi.yml#listRatings
+  marked_deprecated_in_spec: false
+  note: >-
+    Flagged as deprecated in the operation description only. The OpenAPI does NOT set
+    deprecated true on the operation, so tooling that reads the spec will not see it.
+sla:
+  published: false
+  uptime_target: null
+  quoted: "BeZero gives no warranty or undertaking that the operation or availability of the BeZero API will be uninterrupted or error-free."
+  support_response: resolution timelines provided within 3 Business Days of issue notification
+  source: https://legal.bezerocarbon.com/legal-hub/product-specific-terms-ffc0b2c9
+status_page:
+  published: false
+  probes:
+  - {url: 'https://status.bezerocarbon.com/', status: 'TLS handshake failure — no valid certificate for this host'}
+  - {url: 'https://bezerocarbon.com/changelog', status: 404}
+  note: No public status page or uptime history for the Ratings API.
+changelog:
+  published: false
+  probes:
+  - {url: 'https://bezerocarbon.com/changelog', status: 404}
+  note: >-
+    No dated changelog. The only change artifact BeZero publishes is the one-off
+    v2-to-v3 migration guide PDF linked from the top of the API reference.
+gaps:
+- The deprecation policy is in the legal hub, not the developer reference — an integrator reading the docs will never see it.
+- No Sunset or Deprecation response headers, so deprecation cannot be detected in-band.
+- getRatingDetails is described as deprecated in prose but is not marked deprecated in the OpenAPI.
+- No status page and no changelog.

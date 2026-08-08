@@ -1,0 +1,52 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: BeZero Carbon
+providerId: bezero-carbon
+created: '2026-08-07'
+modified: '2026-08-07'
+generated: '2026-08-07'
+method: searched
+tags:
+- Rate Limiting
+- Carbon Ratings
+description: >-
+  The BeZero Ratings API publishes a single flat limit of 1000 requests per minute, stated in
+  the Rate limiting section of the API reference. Over the limit the API returns 429 with a
+  Retry-After header allowing a retry after one minute. No per-plan or per-endpoint variation
+  is published, and no remaining-quota headers are returned on successful responses.
+sources:
+- https://api-docs.bezerocarbonmarkets.com/#section/Rate-limiting
+- openapi/bezero-carbon-ratings-openapi.yml
+quoted: >-
+  "The API is rate limited to 1000 requests per minute, any more requests than this will
+  result in a 429 Too Many Requests, it allows retry after 1 minute."
+headers:
+  requestId: null
+  limit: null
+  remaining: null
+  reset: null
+  retryAfter: Retry-After
+responseCodes:
+  throttled: 429
+limits:
+- name: All requests
+  scope: api
+  metric: requests_per_minute
+  limit: 1000
+  timeFrame: minute
+  appliesTo: [listRatings, getRatingDetails, getRiskFactors, listProjects]
+retry:
+  retry_after_seconds: 60
+  documented_on: [listRatings, getRatingDetails, getRiskFactors, listProjects]
+  guidance: >-
+    Honour Retry-After rather than retrying immediately. Use the changedSince query parameter
+    and the links.queryLatestChanges watermark to poll incrementally instead of re-walking the
+    100-record pages of the full catalog on every cycle.
+gaps:
+- >-
+  No X-RateLimit-Limit / -Remaining / -Reset headers on successful responses, so a client
+  cannot see how much of its budget remains until it has already been throttled.
+- >-
+  The limit is not broken out by plan or endpoint, so a Premium subscriber pulling risk
+  factors per rating shares the same 1000 rpm ceiling as a headline-ratings-only consumer.

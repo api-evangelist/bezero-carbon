@@ -42,5 +42,12 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-BeZero Carbon is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+BeZero Carbon is a global carbon ratings agency for the Voluntary Carbon Market, founded in London in 2020. It publishes an independent eight-point BeZero Carbon Rating (AAA to D, plus Withdrawn) expressing the likelihood that a given carbon credit achieves a tonne of CO2e avoided or removed, alongside risk factor scores, summary analysis and project reference data.
+
+The **BeZero Ratings API** (v3, OpenAPI 3.0.0, OAuth 2.0 client credentials) lets exchanges, marketplaces, brokers and data providers pull ratings, rated projects and premium risk factor scores into their own platforms.
+
+- Website: https://bezerocarbon.com/
+- API reference: https://api-docs.bezerocarbonmarkets.com/
+- Base URL: `https://api.bezerocarbonmarkets.com/v3`
+- Ratings platform: https://bezerocarbonmarkets.com/
+- GitHub: https://github.com/BeZeroCarbon

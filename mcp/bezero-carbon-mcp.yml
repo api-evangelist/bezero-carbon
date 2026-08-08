@@ -1,0 +1,78 @@
+generated: '2026-08-07'
+method: searched
+status: candidate
+source: openapi/bezero-carbon-ratings-openapi.yml
+search_result:
+  official_hosted_server_for_ratings_api: none
+  published_first_party_mcp_server: '@bezerocarbon/metabase-mcp-server'
+  note: >-
+    BeZero publishes a first-party MCP server on npm — but it wraps Metabase, their
+    internal BI stack, not the BeZero Ratings API. There is no MCP surface over BeZero
+    rating data. The tools[] below are a CANDIDATE derivation from the four operations
+    in the published OpenAPI, not something BeZero ships.
+  probes:
+  - {url: 'https://mcp.bezerocarbon.com', method: DNS, status: NXDOMAIN}
+  - {url: 'https://mcp.bezerocarbonmarkets.com', method: DNS, status: NXDOMAIN}
+  - {url: 'https://bezerocarbon.com/mcp', method: POST tools/list, status: 404}
+  - {url: 'https://api.bezerocarbonmarkets.com/mcp', method: POST tools/list, status: 200, note: SPA catch-all shell, not an MCP endpoint — identical to control path}
+published_servers:
+- name: metabase-mcp-server
+  package: '@bezerocarbon/metabase-mcp-server'
+  registry: npm
+  version: 1.2.8
+  transport: stdio
+  url: https://www.npmjs.com/package/@bezerocarbon/metabase-mcp-server
+  repository: https://github.com/BeZeroCarbon/metabase-mcp-server
+  covers: Metabase
+  covers_bezero_api: false
+  official: true
+server:
+  name: bezero-ratings
+  transport: http
+  url: null
+  status: candidate
+  auth:
+    type: oauth2
+    flow: clientCredentials
+    token_url: https://login.bezerocarbonmarkets.com/oauth2/token
+    scopes:
+    - bcm/v3.ratings:list
+    - bcm/v3.ratings:details
+    - bcm/v3.ratings:riskFactors
+    - bcm/v3.projects:list
+tools:
+- name: list_ratings
+  description: >-
+    List BeZero Carbon ratings, 100 per page, ordered by dataLastUpdatedAt and projectID.
+    Supports incremental sync with changedSince.
+  source_operation: openapi/bezero-carbon-ratings-openapi.yml#listRatings
+  scope: bcm/v3.ratings:list
+  read_only: true
+- name: get_rating_details
+  description: >-
+    Fetch the summary analysis for a single rating by ratingID. Deprecated by BeZero —
+    summaryAnalysis is now returned inline by list_ratings.
+  source_operation: openapi/bezero-carbon-ratings-openapi.yml#getRatingDetails
+  scope: bcm/v3.ratings:details
+  read_only: true
+  deprecated: true
+- name: get_risk_factors
+  description: >-
+    Premium. Fetch additionality, carbon accounting and permanence risk factor scores
+    (aaa..d) for a single rating.
+  source_operation: openapi/bezero-carbon-ratings-openapi.yml#getRiskFactors
+  scope: bcm/v3.ratings:riskFactors
+  read_only: true
+  tier: premium
+- name: list_projects
+  description: >-
+    List the carbon projects BeZero rates, with accreditor, registry ID, sector group,
+    sector, sub-sector and ISO 3166-1 alpha-3 location. 100 per page.
+  source_operation: openapi/bezero-carbon-ratings-openapi.yml#listProjects
+  scope: bcm/v3.projects:list
+  read_only: true
+notes:
+- Every operation in the BeZero Ratings API is a GET; a candidate MCP server would be entirely read-only.
+- >-
+  Rate limit is 1000 requests per minute API-wide, so an MCP server fronting this API
+  should surface Retry-After from the 429 response rather than retrying blind.

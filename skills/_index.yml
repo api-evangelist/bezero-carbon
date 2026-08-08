@@ -1,0 +1,25 @@
+generated: '2026-08-07'
+method: generated
+source: openapi/bezero-carbon-ratings-openapi.yml
+note: >-
+  BeZero publishes no AGENTS.md or skill files of its own. These are generated from the
+  published OpenAPI plus the conventions, error and lifecycle artifacts in this repo; every
+  step is grounded in a real operationId from the spec.
+skills:
+- file: bezero-carbon-sync-ratings.md
+  name: Sync BeZero carbon credit ratings
+  description: >-
+    Keep a local copy of BeZero ratings and rated projects in sync using incremental
+    changedSince polling, without re-walking the whole catalog.
+  api: openapi/bezero-carbon-ratings-openapi.yml
+  operations: [listProjects, listRatings]
+  scopes: [bcm/v3.projects:list, bcm/v3.ratings:list]
+- file: bezero-carbon-screen-project-risk.md
+  name: Screen a carbon project on BeZero risk factors
+  description: >-
+    Take a project or rating, pull its BeZero rating plus premium additionality, carbon
+    accounting and permanence risk factor scores, and read the two scales correctly.
+  api: openapi/bezero-carbon-ratings-openapi.yml
+  operations: [listProjects, listRatings, getRiskFactors]
+  scopes: [bcm/v3.projects:list, bcm/v3.ratings:list, bcm/v3.ratings:riskFactors]
+  tier: premium

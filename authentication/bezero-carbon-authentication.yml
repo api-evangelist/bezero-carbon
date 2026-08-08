@@ -1,0 +1,18 @@
+generated: '2026-08-07'
+method: derived
+source: openapi/bezero-carbon-ratings-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://login.bezerocarbonmarkets.com/oauth2/token
+    scopes: 4
+  description: This API uses OAuth 2 with Client Credentials
+  sources:
+  - openapi/bezero-carbon-ratings-openapi.yml

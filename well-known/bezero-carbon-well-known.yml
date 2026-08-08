@@ -1,0 +1,85 @@
+generated: '2026-08-07'
+method: probed
+source: live GET of /.well-known/* on every BeZero host
+note: >-
+  No .well-known document is published on any BeZero host. Two hosts answer with a catch-all
+  rather than a true 404, so every probe below was run alongside a control path
+  (/.well-known/zzz-control-probe) and only counted as a hit if it differed from the control.
+  api.bezerocarbonmarkets.com is a single-page app that returns HTTP 200 with the same
+  1083-byte HTML shell for EVERY path — an apparent 200 there is a soft-404, not evidence.
+  api-docs.bezerocarbonmarkets.com is a static object store that answers 403 AccessDenied
+  for every key that does not exist.
+hosts:
+- host: bezerocarbon.com
+  control:
+    path: /.well-known/zzz-control-probe
+    status: 404
+    bytes: 42002
+  documents:
+  - {path: /.well-known/security.txt, status: 404, hit: false}
+  - {path: /.well-known/openid-configuration, status: 404, hit: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, hit: false}
+  - {path: /.well-known/oauth-protected-resource, status: 404, hit: false}
+  - {path: /.well-known/api-catalog, status: 404, hit: false}
+  - {path: /.well-known/ai-plugin.json, status: 404, hit: false}
+  - {path: /.well-known/agent-card.json, status: 404, hit: false}
+  - {path: /.well-known/agent.json, status: 404, hit: false}
+- host: api.bezerocarbonmarkets.com
+  control:
+    path: /.well-known/zzz-control-probe
+    status: 200
+    bytes: 1083
+    note: SPA catch-all — 200 for every path; all 200s below are soft-404s
+  documents:
+  - {path: /.well-known/security.txt, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/openid-configuration, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/oauth-authorization-server, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/oauth-protected-resource, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/api-catalog, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/ai-plugin.json, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/agent-card.json, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+  - {path: /.well-known/agent.json, status: 200, bytes: 1083, hit: false, reason: identical-to-control}
+- host: login.bezerocarbonmarkets.com
+  control:
+    path: /.well-known/zzz-control-probe
+    status: 404
+    bytes: 63
+    body: '{"error":"This URL doesn''t exist on the authorization server."}'
+  note: >-
+    This is the OAuth 2.0 token server named in the OpenAPI (tokenUrl
+    https://login.bezerocarbonmarkets.com/oauth2/token) but it publishes neither
+    RFC 8414 authorization-server metadata nor OIDC discovery.
+  documents:
+  - {path: /.well-known/openid-configuration, status: 404, hit: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, hit: false}
+  - {path: /.well-known/oauth-protected-resource, status: 404, hit: false}
+  - {path: /.well-known/jwks.json, status: 404, hit: false}
+  - {path: /.well-known/security.txt, status: 404, hit: false}
+  - {path: /.well-known/agent-card.json, status: 404, hit: false}
+  - {path: /.well-known/agent.json, status: 404, hit: false}
+- host: api-docs.bezerocarbonmarkets.com
+  control:
+    path: /.well-known/zzz-control-probe
+    status: 403
+    bytes: 111
+    note: static object store — 403 AccessDenied for every non-existent key
+  documents:
+  - {path: /.well-known/security.txt, status: 403, hit: false}
+  - {path: /.well-known/agent-card.json, status: 403, hit: false}
+  - {path: /.well-known/agent.json, status: 403, hit: false}
+  - {path: /.well-known/api-catalog, status: 403, hit: false}
+summary:
+  documents_found: 0
+  security_txt: false
+  openid_configuration: false
+  oauth_authorization_server: false
+  api_catalog: false
+  agent_card: false
+gaps:
+- >-
+  The OAuth 2.0 token server publishes no RFC 8414 /.well-known/oauth-authorization-server
+  metadata, so a client cannot discover the token endpoint, supported grant types or the
+  JWKS URI without reading the human documentation.
+- >-
+  No RFC 9116 /.well-known/security.txt on any host, so there is no machine-discoverable
+  route for reporting a vulnerability.

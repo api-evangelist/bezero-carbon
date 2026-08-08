@@ -1,0 +1,35 @@
+generated: '2026-08-07'
+method: derived
+source: openapi/bezero-carbon-ratings-openapi.yml
+schemes:
+- name: OAuth2
+  source: openapi/bezero-carbon-ratings-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://login.bezerocarbonmarkets.com/oauth2/token
+  description: This API uses OAuth 2 with Client Credentials
+scopes:
+- scope: bcm/v3.projects:list
+  description: list projects
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/bezero-carbon-ratings-openapi.yml
+- scope: bcm/v3.ratings:details
+  description: read rating details
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/bezero-carbon-ratings-openapi.yml
+- scope: bcm/v3.ratings:list
+  description: list ratings
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/bezero-carbon-ratings-openapi.yml
+- scope: bcm/v3.ratings:riskFactors
+  description: read rating risk factors
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/bezero-carbon-ratings-openapi.yml

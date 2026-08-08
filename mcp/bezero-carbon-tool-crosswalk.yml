@@ -1,0 +1,64 @@
+generated: '2026-08-07'
+method: derived
+source: mcp/bezero-carbon-mcp.yml + openapi/bezero-carbon-ratings-openapi.yml
+note: >-
+  BeZero ships no MCP server over the Ratings API, so the tools bound below are the
+  CANDIDATE set derived in mcp/bezero-carbon-mcp.yml. The binding is nonetheless exact:
+  each candidate tool is one published OpenAPI operation, and inherits that operation's
+  parameters verbatim as its inputSchema. Confidence is high because the derivation is
+  1:1 with the spec, not because BeZero has published a tool of this name.
+surfaces:
+  openapi:
+    file: openapi/bezero-carbon-ratings-openapi.yml
+    version: 3.0.0
+    server: https://api.bezerocarbonmarkets.com/v3
+    operations: 4
+    gated: false
+    published_at: https://api-docs.bezerocarbonmarkets.com/
+  graphql:
+    endpoint: null
+    note: no GraphQL surface found
+  mcp:
+    url: null
+    gated: false
+    note: no MCP server over the Ratings API; the first-party @bezerocarbon/metabase-mcp-server covers Metabase, not BeZero data
+crosswalk:
+- tool: list_ratings
+  category: ratings
+  rest: [listRatings]
+  binding: rest
+  confidence: high
+  inputs: [changedSince, page]
+  scope: bcm/v3.ratings:list
+- tool: get_rating_details
+  category: ratings
+  rest: [getRatingDetails]
+  binding: rest
+  confidence: high
+  inputs: [ratingID]
+  scope: bcm/v3.ratings:details
+  note: BeZero marks this operation deprecated — summaryAnalysis now ships inline on listRatings.
+- tool: get_risk_factors
+  category: risk
+  rest: [getRiskFactors]
+  binding: rest
+  confidence: high
+  inputs: [ratingID]
+  scope: bcm/v3.ratings:riskFactors
+  note: Premium tier; a token without this scope gets 403.
+- tool: list_projects
+  category: projects
+  rest: [listProjects]
+  binding: rest
+  confidence: high
+  inputs: [changedSince, page]
+  scope: bcm/v3.projects:list
+mcp_only: []
+rest_only: []
+coverage:
+  tools_named: 4
+  tools_bound: 4
+  mcp_only: 0
+  rest_operations_total: 4
+  rest_operations_with_tool: 4
+  binding_completeness: 1.0

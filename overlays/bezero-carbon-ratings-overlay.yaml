@@ -1,0 +1,93 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the BeZero Ratings API
+  version: 1.0.0
+x-generated: '2026-08-07'
+x-method: generated
+x-source: openapi/bezero-carbon-ratings-openapi.yml
+x-note: >-
+  Non-destructive enhancements API Evangelist would apply to BeZero's published OpenAPI.
+  Every action below closes a gap observed in the original spec: no tags, no operation-level
+  deprecation flag, no declared 400 for the documented version-selection rejection, no
+  rate-limit or versioning extensions, and no components.schemas reuse. The original
+  document is never mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profiled: '2026-08-07'
+    x-api-evangelist-source: https://api-docs.bezerocarbonmarkets.com/
+    x-read-only: true
+- target: $
+  update:
+    tags:
+    - name: Ratings
+      description: BeZero Carbon ratings, watch status, vintages and summary analysis.
+    - name: Projects
+      description: Carbon projects BeZero rates, with accreditor, registry and sector reference data.
+    - name: Risk
+      description: Premium per-rating risk factor scores.
+- target: $.paths['/ratings'].get
+  update:
+    tags: [Ratings]
+    x-rate-limit:
+      limit: 1000
+      window: 1m
+      over_limit_status: 429
+      retry_after: 60
+    x-pagination:
+      style: page-number
+      page_size: 100
+      param: page
+      next: links.nextPage
+    x-incremental-sync:
+      param: changedSince
+      watermark: dataLastUpdatedAt
+      cursor: links.queryLatestChanges
+- target: $.paths['/projects'].get
+  update:
+    tags: [Projects]
+    x-rate-limit:
+      limit: 1000
+      window: 1m
+      over_limit_status: 429
+      retry_after: 60
+    x-pagination:
+      style: page-number
+      page_size: 100
+      param: page
+      next: links.nextPage
+    x-incremental-sync:
+      param: changedSince
+      watermark: dataLastUpdatedAt
+      cursor: links.queryLatestChanges
+- target: $.paths['/ratings/{ratingID}'].get
+  update:
+    tags: [Ratings]
+    deprecated: true
+    x-deprecation:
+      reason: summaryAnalysis is now returned inline by GET /ratings
+      replacement: listRatings
+      note: >-
+        BeZero states this in the operation description but does not set the OpenAPI
+        deprecated flag, so spec-reading tooling cannot detect it.
+- target: $.paths['/ratings/{ratingID}/risk-factors'].get
+  update:
+    tags: [Risk]
+    x-tier: premium
+    x-entitlement:
+      scope: bcm/v3.ratings:riskFactors
+      note: A contract without the Premium tier receives 403 on this operation.
+- target: $
+  update:
+    x-versioning:
+      header: Accept-API-Version
+      default: '3.0'
+      supported: ['3.0', '3.1']
+      echoed_on_response: true
+      invalid_value_status: 400
+- target: $
+  update:
+    x-deprecation-policy:
+      advance_notice: 3 months
+      legacy_support_window: 6 months
+      source: https://legal.bezerocarbon.com/legal-hub/product-specific-terms-ffc0b2c9

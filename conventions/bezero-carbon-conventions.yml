@@ -1,0 +1,98 @@
+generated: '2026-08-07'
+method: searched
+source: https://api-docs.bezerocarbonmarkets.com/
+derived_from: openapi/bezero-carbon-ratings-openapi.yml
+api: BeZero Ratings API v3
+authentication:
+  style: oauth2-client-credentials
+  token_url: https://login.bezerocarbonmarkets.com/oauth2/token
+  header: 'Authorization: Bearer <token>'
+  credential_issuance: >-
+    BeZero issues a production Client ID and Client Secret under a commercial agreement.
+    There is no self-service registration and no sandbox credential set.
+  per_operation_scopes: true
+  see: authentication/bezero-carbon-authentication.yml
+idempotency:
+  supported: false
+  reason: >-
+    Every operation in the API is a GET. There is no write surface, so there is no
+    idempotency key contract to document. GET is idempotent by HTTP semantics.
+  header: null
+pagination:
+  style: page-number
+  request_params:
+  - {name: page, in: query, type: integer, required: false, description: page number}
+  page_size: 100
+  fixed_page_size: true
+  response_fields:
+  - {field: links.nextPage, nullable: true, description: relative URL/page number for the next page}
+  - {field: links.prevPage, nullable: true, description: relative URL/page number for the previous page}
+  applies_to: [listRatings, listProjects]
+incremental_sync:
+  supported: true
+  request_param: {name: changedSince, in: query, type: string, format: ISO 8601 datetime}
+  watermark_field: dataLastUpdatedAt
+  response_field: links.queryLatestChanges
+  pattern: >-
+    Each list response returns links.queryLatestChanges — the relative URL, already carrying a
+    changedSince timestamp, to use on the next poll. Any change to data returned by either the
+    ratings list or the rating details bumps dataLastUpdatedAt, so a changedSince poll is
+    sufficient to stay in sync without refetching the whole catalog.
+  guidance: >-
+    BeZero recommends polling /projects at the same cadence as /ratings, and warns that
+    ratings, risk factors and summary analysis are always updated together — fetch them
+    in the same pass or the three will drift out of sync.
+versioning:
+  scheme: uri-path + request header
+  uri_version: /v3
+  header: Accept-API-Version
+  default: '3.0'
+  supported: ['3.0', '3.1']
+  echoed_on_response: true
+  behaviour:
+    '3.0': returns only the first published rating for a project
+    '3.1': returns multiple ratings for a single project where more than one has been published
+  invalid_value: 400 Bad Request
+  see: lifecycle/bezero-carbon-lifecycle.yml
+field_expansion:
+  supported: false
+  note: >-
+    No expand/fields/sparse-fieldset parameter. The list response embeds relative links
+    (links.ratingDetails, links.riskFactors) to the sub-resources instead.
+metadata:
+  custom_metadata: false
+request_tracing:
+  request_id_header: null
+  documented: false
+error_envelope:
+  format: opaque
+  rfc9457: false
+  content_type_declared: false
+  note: >-
+    The 4xx and 429 responses in the OpenAPI carry a description but no schema and no
+    response content type, so the error body shape is undocumented. Not application/problem+json.
+  see: errors/bezero-carbon-problem-types.yml
+rate_limiting:
+  documented: true
+  limit: 1000
+  window: 1 minute
+  scope: api-wide
+  over_limit_status: 429
+  headers_on_429: [Retry-After]
+  retry_after: 60 seconds
+  quota_headers_on_success: false
+  note: >-
+    No X-RateLimit-Limit / -Remaining / -Reset headers are documented on successful
+    responses, so a client cannot see how much of its 1000 rpm budget is left until it
+    is already being throttled.
+caching:
+  documented: false
+  etag: false
+  last_modified: false
+  note: dataLastUpdatedAt on each record is the de-facto change token in place of HTTP caching headers.
+http_methods_used: [GET]
+read_only: true
+gaps:
+- No request-id / correlation header is documented, so a client cannot cite an identifier when reporting a failed call.
+- Rate-limit budget is only visible after a 429; no remaining-quota headers on 2xx.
+- Error bodies have no documented schema or media type.

@@ -1,0 +1,82 @@
+generated: '2026-08-07'
+method: derived
+source: openapi/bezero-carbon-ratings-openapi.yml
+docs: https://api-docs.bezerocarbonmarkets.com/
+format: opaque
+rfc9457: false
+note: >-
+  The BeZero Ratings API does not use RFC 9457 problem+json. Every non-2xx response in the
+  published OpenAPI declares a description only — no schema, no content type, no error code
+  registry — so the response body shape for a failure is undocumented. The entries below are
+  derived from the response declarations in the spec plus the rate-limit and version-selection
+  rules stated in the reference. Titles are BeZero's own wording; remediation is derived.
+problems:
+- status: 400
+  title: Unsupported Accept-API-Version
+  description: >-
+    Requests carrying an Accept-API-Version header whose value is not a supported version
+    are rejected. Currently supported values are 3.0 and 3.1.
+  source: https://api-docs.bezerocarbonmarkets.com/#section/API-version-selection
+  remediation: Send Accept-API-Version 3.0 or 3.1, or omit the header to default to 3.0.
+  applies_to: [listRatings, getRatingDetails, getRiskFactors, listProjects]
+  declared_in_spec: false
+- status: 403
+  title: unauthorised
+  description: >-
+    Returned when the bearer token is missing, expired, or does not carry the scope the
+    operation requires. Note BeZero returns 403 here rather than 401 for an absent or
+    invalid token in the documented responses.
+  remediation: >-
+    Re-acquire a token from https://login.bezerocarbonmarkets.com/oauth2/token with the
+    client credentials grant, requesting the scope the operation declares
+    (bcm/v3.ratings:list, bcm/v3.ratings:details, bcm/v3.ratings:riskFactors,
+    bcm/v3.projects:list). A 403 on /ratings/{ratingID}/risk-factors most often means the
+    contract does not include the Premium tier rather than that the token is malformed.
+  source_operations:
+  - openapi/bezero-carbon-ratings-openapi.yml#listRatings
+  - openapi/bezero-carbon-ratings-openapi.yml#getRatingDetails
+  - openapi/bezero-carbon-ratings-openapi.yml#getRiskFactors
+  - openapi/bezero-carbon-ratings-openapi.yml#listProjects
+  declared_in_spec: true
+- status: 404
+  title: rating not found
+  description: No rating exists for the supplied ratingID.
+  remediation: >-
+    Take ratingID values from the id field of a listRatings response rather than
+    constructing them. A rating that has been withdrawn is still returned by listRatings
+    with rating Withdrawn, so a 404 means the identifier is wrong, not that the rating lapsed.
+  source_operations:
+  - openapi/bezero-carbon-ratings-openapi.yml#getRatingDetails
+  - openapi/bezero-carbon-ratings-openapi.yml#getRiskFactors
+  declared_in_spec: true
+- status: 429
+  title: rate limit exceeded
+  description: >-
+    The API is rate limited to 1000 requests per minute. Exceeding it returns 429 with a
+    Retry-After header allowing a retry after 1 minute.
+  headers: [Retry-After]
+  remediation: >-
+    Honour Retry-After (60 seconds) rather than retrying immediately. Use the changedSince
+    filter and links.queryLatestChanges to poll incrementally instead of walking the full
+    catalog on every cycle.
+  source_operations:
+  - openapi/bezero-carbon-ratings-openapi.yml#listRatings
+  - openapi/bezero-carbon-ratings-openapi.yml#getRatingDetails
+  - openapi/bezero-carbon-ratings-openapi.yml#getRiskFactors
+  - openapi/bezero-carbon-ratings-openapi.yml#listProjects
+  declared_in_spec: true
+coverage:
+  operations: 4
+  distinct_statuses: 4
+  statuses_with_schema: 0
+  statuses_with_content_type: 0
+gaps:
+- >-
+  No error body schema is published for any status, so a client cannot parse a machine-readable
+  reason and must branch on the HTTP status alone.
+- >-
+  No error code registry. A 403 covering "no token", "expired token" and "not entitled to the
+  Premium tier" is three very different operator actions behind one status.
+- >-
+  400 is documented in prose under API version selection but is not declared as a response on
+  any operation in the OpenAPI.
