@@ -27,27 +27,30 @@ tags:
 - Market Intelligence
 - Risk Analysis
 apis:
-- aid: bezero-carbon-ratings-api
-  name: BeZero Ratings API
-  description: 'The BeZero Ratings API returns BeZero Carbon project ratings in a standard JSON response.
-    It exposes a paginated list of ratings (AAA to D, plus Withdrawn), each carrying the rating watch
-    status, vintage range, summary analysis and a platform URL; a paginated list of rated projects with
-    accreditor, registry ID, sector group, sector, sub-sector and ISO 3166-1 alpha-3 location; and a
-    premium risk-factors endpoint returning additionality, carbon accounting and permanence scores.
-    Authentication is OAuth 2.0 client credentials against the BeZero token server, with four scopes.
-    The list endpoints support incremental sync via a changedSince filter over dataLastUpdatedAt, and
-    clients opt into behaviour with the Accept-API-Version header (3.0 default, 3.1 supported).'
+- aid: bezero-carbon:bezero-carbon-projects-api
+  name: BeZero Carbon Projects API
+  description: The Projects API from BeZero Carbon — 1 operation(s) for projects.
   humanURL: https://api-docs.bezerocarbonmarkets.com/
   baseURL: https://api.bezerocarbonmarkets.com/v3
   tags:
-  - Carbon Ratings
-  - Carbon Credits
-  - Climate
-  - Ratings
-  - Reference Data
+  - Projects
   properties:
   - type: OpenAPI
-    url: openapi/bezero-carbon-ratings-openapi.yml
+    url: openapi/bezero-carbon-projects-api-openapi.yml
+  - type: APIReference
+    url: https://api-docs.bezerocarbonmarkets.com/
+  - type: Documentation
+    url: https://api-docs.bezerocarbonmarkets.com/
+- aid: bezero-carbon:bezero-carbon-ratings-api
+  name: BeZero Carbon Ratings API
+  description: The Ratings API from BeZero Carbon — 3 operation(s) for ratings.
+  humanURL: https://api-docs.bezerocarbonmarkets.com/
+  baseURL: https://api.bezerocarbonmarkets.com/v3
+  tags:
+  - Ratings
+  properties:
+  - type: OpenAPI
+    url: openapi/bezero-carbon-ratings-api-openapi.yml
   - type: APIReference
     url: https://api-docs.bezerocarbonmarkets.com/
   - type: Documentation
@@ -81,7 +84,7 @@ common:
 - type: PrivacyPolicy
   url: https://legal.bezerocarbon.com/legal-hub/privacy-policy-b92ddd45
 - type: OpenAPI
-  url: openapi/bezero-carbon-ratings-openapi.yml
+  url: openapi/_original/bezero-carbon-ratings-openapi.yml
 - type: Authentication
   url: authentication/bezero-carbon-authentication.yml
 - type: OAuthScopes
