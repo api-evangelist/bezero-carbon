@@ -1,0 +1,126 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BeZero Ratings API",
+    "version": "3.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Ratings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Ratings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.bezerocarbonmarkets.com/v3/ratings",
+            "headers": [
+              {
+                "name": "Accept-API-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "changedSince",
+                "value": "2024-07-10T09:46:11Z",
+                "type": "query",
+                "description": "optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed since provided date"
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "optional pagination value"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://login.bezerocarbonmarkets.com/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "The ratings endpoint returns a list of BeZero ratings. Each page returns 100 ratings before it is paginated and the list is filterable by the `dataLastUpdatedAt` timestamp. Change to any of the data returned by ratings list or ratings details will update the `dataLastUpdatedAt` timestamp. You can filter the list using `changedSince` to only return any changes that may have occurred since the last query, to minimise API calls. `queryLatestChanges` is provided at the end of each paginated page to "
+        },
+        {
+          "info": {
+            "name": "Get Rating Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.bezerocarbonmarkets.com/v3/ratings/:ratingID",
+            "headers": [
+              {
+                "name": "Accept-API-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ratingID",
+                "value": "",
+                "type": "path",
+                "description": "The BeZero Carbon unique identifier for this rating"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://login.bezerocarbonmarkets.com/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Deprecated. The `summaryAnalysis` field is now included in the `GET /ratings` list response, so clients should use the list endpoint instead of this endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "Premium: Risk factors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.bezerocarbonmarkets.com/v3/ratings/:ratingID/risk-factors",
+            "headers": [
+              {
+                "name": "Accept-API-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ratingID",
+                "value": "",
+                "type": "path",
+                "description": "The BeZero Carbon unique identifier for this rating"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://login.bezerocarbonmarkets.com/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "The risk factors endpoint is a Premium endpoint that returns a risk factor score for each BeZero rated project. The risk factors can have a score of aaa, aa, a, bbb, bb, b, c, d. Ratings, risk factors and summary analysis are always updated together so users are recommended to get the rating, rating detail and risk factors when requesting updates. Otherwise rating, rating summary and risk factor scores will be out of sync.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

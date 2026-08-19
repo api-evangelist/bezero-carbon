@@ -1,0 +1,58 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BeZero Ratings Projects API",
+    "version": "3.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Projects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.bezerocarbonmarkets.com/v3/projects",
+            "headers": [
+              {
+                "name": "Accept-API-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "changedSince",
+                "value": "2024-07-10T09:46:11Z",
+                "type": "query",
+                "description": "optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed since provided date"
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "optional pagination value"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://login.bezerocarbonmarkets.com/oauth2/token",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint returns projects for which BeZero has a rating. It is sorted by `dataLastUpdatedAt` and paginated into 100 projects. BeZero can add new ratings at any time so BeZero recommends calling this endpoint at the same cadence as the ratings list, using the `changedSince` functionality to filter for any changes.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

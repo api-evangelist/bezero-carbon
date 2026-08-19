@@ -1,0 +1,234 @@
+openapi: 3.2.0
+info:
+  title: BeZero Ratings Projects API
+  version: 3.0.0
+  x-logo:
+    url: ./logo.svg
+    altText: BeZero logo
+    href: https://bezerocarbon.com
+  contact:
+    name: BeZero Engineering
+    email: engineering@bezerocarbon.com
+  description: '[BeZero Ratings API Migration Guide v2 to v3](./bezero-api-migration-guide-v3.pdf)
+
+    # Introduction to the Ratings API
+
+    The BeZero Ratings API provides information about project ratings  in a standard JSON response. The API is authenticated using OAuth 2.0.
+
+
+    With our API integration technology, participants can display the BeZero Carbon Rating and rating summary on their platform. Whether an exchange, a data provider, a marketplace or a broker, with our API solution you can provide end users with BeZero Carbon ratings.
+
+    ## BeZero Rating Scale
+
+    The BeZero Carbon Rating represents BeZero’s opinion on the likelihood that a given credit achieves a tonne of CO₂e avoided or removed from the atmosphere. With ‘AAA’ representing the highest likelihood, and ‘D’ representing the lowest, the rating scale is fully aligned with financial market standards, making it easy to interpret. On the API, the rating will be returned on an 8-point scale from AAA to D.
+
+    ## BeZero Watch Status
+
+    BeZero Carbon ratings can be put ‘On Watch’ if new information comes to light. A process of review begins and at the end of this process different outcomes are possible:
+
+
+    - upgrade the rating to a level higher than at present
+
+    - downgrade the rating to a level lower than at present or
+
+    - reaffirm the rating at current levels.
+
+
+    Simultaneously, the rating will be ‘removed from watch’. On the API, the watch status will be returned as a boolean True/False. The watch status needs to be shown next to the rating if that project is on watch and until that watch status is removed. The API will provide the updated rating along with the watch status.
+
+    ## BeZero Withdrawn Ratings
+
+    BeZero Carbon Ratings are assigned only to projects meeting a predefined eligibility criteria. These include documented tests on additionality, formal audit processes and continued public availability of all relevant information. BeZero Carbon Ratings may be withdrawn in case there is a material impairment in the project’s ability to meet any of the eligibility criteria including partial or complete withdrawal or unavailability of relevant information in public domain. BeZero may also withdraw its ratings in case BeZero Carbon becomes aware of any risks with respect to the ownership of the project and/or usage rights. All rating withdrawals are published on the BeZero API. For ratings that have been withdrawn, the API will return a Withdrawn status.
+
+    ## BeZero Rating Vintage Range
+
+    The BeZero rating applies to credits within the vintage range returned by the API as the Vintage Start and End date.
+
+
+    For more insight into the BeZero Carbon Rating methodology please refer to https://bezerocarbon.com/ratings/resources
+
+    # Authentication and credential provision
+
+    A token can be acquired using the standard OAuth 2.0 authorisation flow from the BeZero Token Server using the access keys we provide. BeZero will provide a Production set of Client ID and Client Secrets that will allow you to authenticate with the Ratings API.
+
+    <!-- Redoc-Inject: <security-definitions> -->
+
+    # Rate limiting
+
+    The API is rate limited to 1000 requests per minute, any more requests than this will result in a 429 Too Many Requests, it allows retry after 1 minute.
+
+    # API version selection
+
+    Clients can opt into changes by attaching a `Accept-API-Version` header.
+
+    If the header is omitted, the API defaults to `3.0` behaviour. Currently supported values are `3.0` and `3.1`.
+
+    Requests with an unsupported `Accept-API-Version` value will be rejected with `400 Bad Request`. Responses include the resolved `Accept-API-Version` header so clients can confirm which compatibility version was applied.
+
+    `3.0` will exclude all but the first published rating for a project. `3.1` will return multiple ratings for a single project, if any have been published.
+
+    '
+servers:
+- url: https://api.bezerocarbonmarkets.com/v3
+tags:
+- name: Projects
+paths:
+  /projects:
+    get:
+      description: 'This endpoint returns projects for which BeZero has a rating. It is sorted by `dataLastUpdatedAt` and paginated into 100 projects. BeZero can add new ratings at any time so BeZero recommends calling this endpoint at the same cadence as the ratings list, using the `changedSince` functionality to filter for any changes.
+
+        '
+      summary: List Projects
+      operationId: listProjects
+      parameters:
+      - $ref: '#/components/parameters/AcceptApiVersion'
+      - in: query
+        name: changedSince
+        description: optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed since provided date
+        required: false
+        schema:
+          type: string
+        example: '2024-07-10T09:46:11Z'
+      - in: query
+        name: page
+        description: optional pagination value
+        required: false
+        schema:
+          type: integer
+        example: 1
+      security:
+      - OAuth2:
+        - bcm/v3.projects:list
+      responses:
+        '200':
+          description: List project information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - accreditor
+                      - registryID
+                      - name
+                      - sectorGroup
+                      - sector
+                      - subSector
+                      - location
+                      - dataLastUpdatedAt
+                      properties:
+                        id:
+                          type: string
+                          description: The BeZero Carbon unique identifier for the project this project applies to
+                        accreditor:
+                          type: string
+                          description: The human-readable name of the accreditor used by the project
+                        registryID:
+                          type: string
+                          description: ID of project as described in official project documentation
+                        sectorGroup:
+                          type: string
+                          description: Sector group of the project
+                        sector:
+                          type: string
+                          description: Sector of the project
+                        subSector:
+                          type: string
+                          description: Sub-sector of the project
+                        location:
+                          type: string
+                          description: ISO 3166-1 alpha-3 country code for where this project is located
+                        dataLastUpdatedAt:
+                          type: string
+                          description: ISO 8601 datetime string for when this project's data was most recently changed
+                  links:
+                    type: object
+                    properties:
+                      queryLatestChanges:
+                        type: string
+                        description: Relative URL for future use when wanting to query all ratings that have changed since this current request was made
+                      nextPage:
+                        type:
+                        - string
+                        - 'null'
+                        description: Paginated page number
+                      prevPage:
+                        type:
+                        - string
+                        - 'null'
+                        description: Paginated page number
+                example:
+                  projects:
+                  - id: ABC123
+                    accreditor: Full Accreditor Name
+                    registryID: '123'
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Blue Carbon
+                    subSector: Mangroves
+                    location: MMR
+                    dataLastUpdatedAt: '2024-09-08T09:00:00Z'
+                  - id: DEF123
+                    accreditor: Full Accreditor Name
+                    registryID: DEF123
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Soil Carbon & Agriculture
+                    subSector: Peatlands
+                    location: IDN
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                  - id: GH1000000100
+                    accreditor: Full Accreditor Name
+                    registryID: GH_1000000_100
+                    name: Full Project Name
+                    sectorGroup: Nature-Based Solutions
+                    sector: Forestry
+                    subSector: Afforestation, Reforestation & Restoration
+                    location: BRA
+                    dataLastUpdatedAt: '2024-09-07T10:00:00Z'
+                  links:
+                    queryLatestChanges: /projects?changedSince=2024-09-06T09:00:00Z
+                    nextPage: /projects?page=2
+                    prevPage: /projects?page=1
+        '403':
+          description: unauthorised
+        '429':
+          description: rate limit exceeded
+          headers:
+            Retry-After:
+              description: seconds to wait before retrying
+              schema:
+                type: integer
+      tags:
+      - Projects
+components:
+  parameters:
+    AcceptApiVersion:
+      in: header
+      name: Accept-API-Version
+      required: false
+      schema:
+        type: string
+        enum:
+        - '3.0'
+        - '3.1'
+      description: 'Optional compatibility version. If omitted, the API defaults to `3.0` behavior.
+
+        '
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: This API uses OAuth 2 with Client Credentials
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.bezerocarbonmarkets.com/oauth2/token
+          scopes:
+            bcm/v3.ratings:list: list ratings
+            bcm/v3.ratings:details: read rating details
+            bcm/v3.ratings:riskFactors: read rating risk factors
+            bcm/v3.projects:list: list projects

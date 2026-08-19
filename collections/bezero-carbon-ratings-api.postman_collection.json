@@ -1,0 +1,863 @@
+{
+  "item": [
+    {
+      "id": "6b8c9c6b-6d11-4eff-8de8-ef53fe12784a",
+      "name": "Ratings",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "74a90f82-c810-4c17-a533-0d5ee0275987",
+          "name": "List Ratings",
+          "request": {
+            "name": "List Ratings",
+            "description": {
+              "content": "The ratings endpoint returns a list of BeZero ratings. Each page returns 100 ratings before it is paginated and the list is filterable by the `dataLastUpdatedAt` timestamp. Change to any of the data returned by ratings list or ratings details will update the `dataLastUpdatedAt` timestamp. You can filter the list using `changedSince` to only return any changes that may have occurred since the last query, to minimise API calls. `queryLatestChanges` is provided at the end of each paginated page to provide a timestamp of when the API was last called. BeZero ratings can change or be put on watch at any time and so polling for updates at least once per day is recommended.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ratings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "changedSince",
+                  "value": "<string>",
+                  "description": "optional ISO 8601 datetime string, when provided will filter out ratings where the data has not changed since provided date"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "optional pagination value"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                "key": "Accept-API-Version",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "bcm/v3.ratings:list bcm/v3.ratings:details bcm/v3.ratings:riskFactors bcm/v3.projects:list"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://login.bezerocarbonmarkets.com/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "28365b69-3636-47a5-8ab0-1db1e91d88a5",
+              "name": "List ratings for projects ordered by dataLastUpdatedAt and projectID.\nNote that only the first published rating for each project will be included unless the `Accept-API-Version: 3.1` header is attached.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "changedSince",
+                      "value": "2024-07-10T09:46:11Z"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ratings\": [\n    {\n      \"id\": \"string\",\n      \"projectID\": \"string\",\n      \"accreditor\": \"string\",\n      \"registryID\": \"string\",\n      \"vintages\": [\n        {\n          \"startDate\": \"string\",\n          \"endDate\": \"string\"\n        },\n        {\n          \"startDate\": \"string\",\n          \"endDate\": \"string\"\n        }\n      ],\n      \"rating\": \"Withdrawn\",\n      \"onRatingsWatch\": true,\n      \"summaryAnalysis\": \"string\",\n      \"platformURL\": \"string\",\n      \"dataLastUpdatedAt\": \"string\",\n      \"links\": {\n        \"ratingDetails\": \"string\",\n        \"riskFactors\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"projectID\": \"string\",\n      \"accreditor\": \"string\",\n      \"registryID\": \"string\",\n      \"vintages\": [\n        {\n          \"startDate\": \"string\",\n          \"endDate\": \"string\"\n        },\n        {\n          \"startDate\": \"string\",\n          \"endDate\": \"string\"\n        }\n      ],\n      \"rating\": \"AAA\",\n      \"onRatingsWatch\": true,\n      \"summaryAnalysis\": \"string\",\n      \"platformURL\": \"string\",\n      \"dataLastUpdatedAt\": \"string\",\n      \"links\": {\n        \"ratingDetails\": \"string\",\n        \"riskFactors\": \"string\"\n      }\n    }\n  ],\n  \"links\": {\n    \"queryLatestChanges\": \"string\",\n    \"nextPage\": \"string\",\n    \"prevPage\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af08eb35-45a7-4b8d-a78a-7e2efb2ecb14",
+              "name": "unauthorised",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "changedSince",
+                      "value": "2024-07-10T09:46:11Z"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "68da597f-1393-428e-9659-b1efd0ba307b",
+              "name": "rate limit exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "changedSince",
+                      "value": "2024-07-10T09:46:11Z"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "seconds to wait before retrying",
+                  "key": "Retry-After",
+                  "value": "7331"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7758104c-6994-4e55-97e1-2e13e4c697df",
+          "name": "Get Rating Details",
+          "request": {
+            "name": "Get Rating Details",
+            "description": {
+              "content": "Deprecated. The `summaryAnalysis` field is now included in the `GET /ratings` list response, so clients should use the list endpoint instead of this endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ratings",
+                ":ratingID"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "ratingID",
+                  "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                "key": "Accept-API-Version",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "bcm/v3.ratings:list bcm/v3.ratings:details bcm/v3.ratings:riskFactors bcm/v3.projects:list"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://login.bezerocarbonmarkets.com/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0acfcafb-523a-4614-b29c-8ac793d5593f",
+              "name": "Additional details of a rating",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"summaryAnalysis\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a09c64e-ab79-45b2-ad1c-fd677119ba52",
+              "name": "unauthorised",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "da9b1238-9152-4875-a11f-1f80deac8300",
+              "name": "rating not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f8d5dcc5-69cc-4671-802e-48bde8651543",
+              "name": "rate limit exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "seconds to wait before retrying",
+                  "key": "Retry-After",
+                  "value": "7331"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "481a08de-62bf-4353-812f-28eabce6ebd1",
+          "name": "Premium: Risk factors",
+          "request": {
+            "name": "Premium: Risk factors",
+            "description": {
+              "content": "The risk factors endpoint is a Premium endpoint that returns a risk factor score for each BeZero rated project. The risk factors can have a score of aaa, aa, a, bbb, bb, b, c, d. Ratings, risk factors and summary analysis are always updated together so users are recommended to get the rating, rating detail and risk factors when requesting updates. Otherwise rating, rating summary and risk factor scores will be out of sync.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ratings",
+                ":ratingID",
+                "risk-factors"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "ratingID",
+                  "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                "key": "Accept-API-Version",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "scope",
+                  "value": "bcm/v3.ratings:list bcm/v3.ratings:details bcm/v3.ratings:riskFactors bcm/v3.projects:list"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://login.bezerocarbonmarkets.com/oauth2/token"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "df5587a3-5c3a-4d85-a2d8-0f8de5f54b67",
+              "name": "Additional details of a rating",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID",
+                    "risk-factors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"additionality\": {\n    \"score\": \"bb\"\n  },\n  \"carbonAccounting\": {\n    \"score\": \"bbb\"\n  },\n  \"permanence\": {\n    \"score\": \"bb\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf7b4b83-8099-4135-b30b-17a8c1dddf77",
+              "name": "unauthorised",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID",
+                    "risk-factors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "68eed4ae-6c6b-40f4-a731-719dc6e46877",
+              "name": "rating not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID",
+                    "risk-factors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "94b10e09-9a72-45ca-9f66-b040c970c1cb",
+              "name": "rate limit exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ratings",
+                    ":ratingID",
+                    "risk-factors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ratingID",
+                      "description": "(Required) The BeZero Carbon unique identifier for this rating"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional compatibility version. If omitted, the API defaults to `3.0` behavior.\n",
+                    "key": "Accept-API-Version",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "seconds to wait before retrying",
+                  "key": "Retry-After",
+                  "value": "7331"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.bezerocarbonmarkets.com/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fe31550f-5a75-4de7-91ba-64c18ee5b16f",
+    "name": "BeZero Ratings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[BeZero Ratings API Migration Guide v2 to v3](./bezero-api-migration-guide-v3.pdf)\n# Introduction to the Ratings API\nThe BeZero Ratings API provides information about project ratings  in a standard JSON response. The API is authenticated using OAuth 2.0.\n\nWith our API integration technology, participants can display the BeZero Carbon Rating and rating summary on their platform. Whether an exchange, a data provider, a marketplace or a broker, with our API solution you can provide end users with BeZero Carbon ratings.\n## BeZero Rating Scale\nThe BeZero Carbon Rating represents BeZero’s opinion on the likelihood that a given credit achieves a tonne of CO₂e avoided or removed from the atmosphere. With ‘AAA’ representing the highest likelihood, and ‘D’ representing the lowest, the rating scale is fully aligned with financial market standards, making it easy to interpret. On the API, the rating will be returned on an 8-point scale from AAA to D.\n## BeZero Watch Status\nBeZero Carbon ratings can be put ‘On Watch’ if new information comes to light. A process of review begins and at the end of this process different outcomes are possible:\n\n- upgrade the rating to a level higher than at present\n- downgrade the rating to a level lower than at present or\n- reaffirm the rating at current levels.\n\nSimultaneously, the rating will be ‘removed from watch’. On the API, the watch status will be returned as a boolean True/False. The watch status needs to be shown next to the rating if that project is on watch and until that watch status is removed. The API will provide the updated rating along with the watch status.\n## BeZero Withdrawn Ratings\nBeZero Carbon Ratings are assigned only to projects meeting a predefined eligibility criteria. These include documented tests on additionality, formal audit processes and continued public availability of all relevant information. BeZero Carbon Ratings may be withdrawn in case there is a material impairment in the project’s ability to meet any of the eligibility criteria including partial or complete withdrawal or unavailability of relevant information in public domain. BeZero may also withdraw its ratings in case BeZero Carbon becomes aware of any risks with respect to the ownership of the project and/or usage rights. All rating withdrawals are published on the BeZero API. For ratings that have been withdrawn, the API will return a Withdrawn status.\n## BeZero Rating Vintage Range\nThe BeZero rating applies to credits within the vintage range returned by the API as the Vintage Start and End date.\n\nFor more insight into the BeZero Carbon Rating methodology please refer to https://bezerocarbon.com/ratings/resources\n# Authentication and credential provision\nA token can be acquired using the standard OAuth 2.0 authorisation flow from the BeZero Token Server using the access keys we provide. BeZero will provide a Production set of Client ID and Client Secrets that will allow you to authenticate with the Ratings API.\n<!-- Redoc-Inject: <security-definitions> -->\n# Rate limiting\nThe API is rate limited to 1000 requests per minute, any more requests than this will result in a 429 Too Many Requests, it allows retry after 1 minute.\n# API version selection\nClients can opt into changes by attaching a `Accept-API-Version` header.\nIf the header is omitted, the API defaults to `3.0` behaviour. Currently supported values are `3.0` and `3.1`.\nRequests with an unsupported `Accept-API-Version` value will be rejected with `400 Bad Request`. Responses include the resolved `Accept-API-Version` header so clients can confirm which compatibility version was applied.\n`3.0` will exclude all but the first published rating for a project. `3.1` will return multiple ratings for a single project, if any have been published.\n\n\nContact Support:\n Name: BeZero Engineering\n Email: engineering@bezerocarbon.com",
+      "type": "text/plain"
+    }
+  }
+}
