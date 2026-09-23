@@ -1,8 +1,7 @@
 {
   "provider": "bezero-carbon",
   "sources": [
-    "bezero-carbon-projects-api-openapi.yml",
-    "bezero-carbon-ratings-api-openapi.yml"
+    "_original/bezero-carbon-ratings-openapi.yml"
   ],
   "outputs": [
     "bezero-carbon-projects-api-openapi.yml",
@@ -12,9 +11,18 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "bezero-carbon-projects-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "bezero-carbon-ratings-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "bezero-carbon-ratings-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "bezero-carbon-ratings-openapi.yml: tagged paths GET /ratings -> Ratings",
+    "bezero-carbon-ratings-openapi.yml: tagged paths GET /ratings/{ratingID} -> Ratings",
+    "bezero-carbon-ratings-openapi.yml: tagged paths GET /ratings/{ratingID}/risk-factors -> Ratings",
+    "bezero-carbon-ratings-openapi.yml: tagged paths GET /projects -> Projects",
+    "bezero-carbon-ratings-openapi.yml: declared missing tag: Projects",
+    "bezero-carbon-ratings-openapi.yml: declared missing tag: Ratings",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "bezero-carbon-projects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "bezero-carbon-ratings-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

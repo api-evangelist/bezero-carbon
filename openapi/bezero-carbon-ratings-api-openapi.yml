@@ -9,65 +9,11 @@ info:
   contact:
     name: BeZero Engineering
     email: engineering@bezerocarbon.com
-  description: '[BeZero Ratings API Migration Guide v2 to v3](./bezero-api-migration-guide-v3.pdf)
+  description: 'BeZero Ratings API Migration Guide v2 to v3
 
     # Introduction to the Ratings API
 
-    The BeZero Ratings API provides information about project ratings  in a standard JSON response. The API is authenticated using OAuth 2.0.
-
-
-    With our API integration technology, participants can display the BeZero Carbon Rating and rating summary on their platform. Whether an exchange, a data provider, a marketplace or a broker, with our API solution you can provide end users with BeZero Carbon ratings.
-
-    ## BeZero Rating Scale
-
-    The BeZero Carbon Rating represents BeZero’s opinion on the likelihood that a given credit achieves a tonne of CO₂e avoided or removed from the atmosphere. With ‘AAA’ representing the highest likelihood, and ‘D’ representing the lowest, the rating scale is fully aligned with financial market standards, making it easy to interpret. On the API, the rating will be returned on an 8-point scale from AAA to D.
-
-    ## BeZero Watch Status
-
-    BeZero Carbon ratings can be put ‘On Watch’ if new information comes to light. A process of review begins and at the end of this process different outcomes are possible:
-
-
-    - upgrade the rating to a level higher than at present
-
-    - downgrade the rating to a level lower than at present or
-
-    - reaffirm the rating at current levels.
-
-
-    Simultaneously, the rating will be ‘removed from watch’. On the API, the watch status will be returned as a boolean True/False. The watch status needs to be shown next to the rating if that project is on watch and until that watch status is removed. The API will provide the updated rating along with the watch status.
-
-    ## BeZero Withdrawn Ratings
-
-    BeZero Carbon Ratings are assigned only to projects meeting a predefined eligibility criteria. These include documented tests on additionality, formal audit processes and continued public availability of all relevant information. BeZero Carbon Ratings may be withdrawn in case there is a material impairment in the project’s ability to meet any of the eligibility criteria including partial or complete withdrawal or unavailability of relevant information in public domain. BeZero may also withdraw its ratings in case BeZero Carbon becomes aware of any risks with respect to the ownership of the project and/or usage rights. All rating withdrawals are published on the BeZero API. For ratings that have been withdrawn, the API will return a Withdrawn status.
-
-    ## BeZero Rating Vintage Range
-
-    The BeZero rating applies to credits within the vintage range returned by the API as the Vintage Start and End date.
-
-
-    For more insight into the BeZero Carbon Rating methodology please refer to https://bezerocarbon.com/ratings/resources
-
-    # Authentication and credential provision
-
-    A token can be acquired using the standard OAuth 2.0 authorisation flow from the BeZero Token Server using the access keys we provide. BeZero will provide a Production set of Client ID and Client Secrets that will allow you to authenticate with the Ratings API.
-
-    <!-- Redoc-Inject: <security-definitions> -->
-
-    # Rate limiting
-
-    The API is rate limited to 1000 requests per minute, any more requests than this will result in a 429 Too Many Requests, it allows retry after 1 minute.
-
-    # API version selection
-
-    Clients can opt into changes by attaching a `Accept-API-Version` header.
-
-    If the header is omitted, the API defaults to `3.0` behaviour. Currently supported values are `3.0` and `3.1`.
-
-    Requests with an unsupported `Accept-API-Version` value will be rejected with `400 Bad Request`. Responses include the resolved `Accept-API-Version` header so clients can confirm which compatibility version was applied.
-
-    `3.0` will exclude all but the first published rating for a project. `3.1` will return multiple ratings for a single project, if any have been published.
-
-    '
+    The BeZero Ratings API provides information about project ratings in a standard JSON response.'
 servers:
 - url: https://api.bezerocarbonmarkets.com/v3
 tags:
@@ -75,9 +21,7 @@ tags:
 paths:
   /ratings:
     get:
-      description: 'The ratings endpoint returns a list of BeZero ratings. Each page returns 100 ratings before it is paginated and the list is filterable by the `dataLastUpdatedAt` timestamp. Change to any of the data returned by ratings list or ratings details will update the `dataLastUpdatedAt` timestamp. You can filter the list using `changedSince` to only return any changes that may have occurred since the last query, to minimise API calls. `queryLatestChanges` is provided at the end of each paginated page to provide a timestamp of when the API was last called. BeZero ratings can change or be put on watch at any time and so polling for updates at least once per day is recommended.
-
-        '
+      description: The ratings endpoint returns a list of BeZero ratings. Each page returns 100 ratings before it is paginated and the list is filterable by the `dataLastUpdatedAt` timestamp. Change to any of the data returned by ratings list or ratings details will update the `dataLastUpdatedAt` timestamp. You can filter the list using `changedSince` to only return any changes that may have occurred since the last query, to minimise API calls. `queryLatestChanges` is provided at the end of each paginated page to provide a timestamp of when the API was last called. BeZero ratings can change or be put on watch at any time and so polling for updates at least once per day is recommended.
       summary: List Ratings
       operationId: listRatings
       parameters:
@@ -291,9 +235,7 @@ paths:
   /ratings/{ratingID}:
     get:
       deprecated: true
-      description: 'Deprecated. The `summaryAnalysis` field is now included in the `GET /ratings` list response, so clients should use the list endpoint instead of this endpoint.
-
-        '
+      description: Deprecated. The `summaryAnalysis` field is now included in the `GET /ratings` list response, so clients should use the list endpoint instead of this endpoint.
       summary: Get Rating Details
       operationId: getRatingDetails
       parameters:
@@ -339,9 +281,7 @@ paths:
       - Ratings
   /ratings/{ratingID}/risk-factors:
     get:
-      description: 'The risk factors endpoint is a Premium endpoint that returns a risk factor score for each BeZero rated project. The risk factors can have a score of aaa, aa, a, bbb, bb, b, c, d. Ratings, risk factors and summary analysis are always updated together so users are recommended to get the rating, rating detail and risk factors when requesting updates. Otherwise rating, rating summary and risk factor scores will be out of sync.
-
-        '
+      description: The risk factors endpoint is a Premium endpoint that returns a risk factor score for each BeZero rated project. The risk factors can have a score of aaa, aa, a, bbb, bb, b, c, d. Ratings, risk factors and summary analysis are always updated together so users are recommended to get the rating, rating detail and risk factors when requesting updates. Otherwise rating, rating summary and risk factor scores will be out of sync.
       summary: 'Premium: Risk factors'
       operationId: getRiskFactors
       parameters:
