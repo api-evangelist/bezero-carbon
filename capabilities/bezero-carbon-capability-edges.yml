@@ -1,0 +1,28 @@
+slug: bezero-carbon
+provider: BeZero Carbon
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Ratings
+  spec_file: bezero-carbon-ratings-api-openapi.yml
+  capability_id: BC-740.20
+  capability_id_l1: BC-740
+  capability_name: Climate & Carbon Management
+  confidence: 0.7
+  evidence: 'GET /ratings/{ratingID} "Get Rating Details"; GET /ratings/{ratingID}/risk-factors "Premium:
+    Risk factors"; "information about project ratings"'
+  reason: 'The surface delivers independent ratings and risk-factor scores on carbon credits (vendor:
+    eight-point BeZero Carbon Rating on likelihood a credit achieves a tonne of CO2e avoided or removed).
+    Consumers use this for carbon credit quality assessment within carbon/climate programmes, so Climate
+    & Carbon Management is the best fit; some chance a buyer frames it as sustainable sourcing or risk
+    assessment instead.'

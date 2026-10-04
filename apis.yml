@@ -92,6 +92,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/bezero-carbon-capability-edges.yml
+  name: BeZero Carbon Business Capability Map
 - type: Website
   url: https://bezerocarbon.com/
 - type: DeveloperPortal
