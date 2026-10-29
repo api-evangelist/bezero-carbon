@@ -64,12 +64,126 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-BeZero Carbon is a global carbon ratings agency for the Voluntary Carbon Market, founded in London in 2020. It publishes an independent eight-point BeZero Carbon Rating (AAA to D, plus Withdrawn) expressing the likelihood that a given carbon credit achieves a tonne of CO2e avoided or removed, alongside risk factor scores, summary analysis and project reference data.
+BeZero Carbon is a global carbon ratings agency for the Voluntary Carbon Market, founded in London in 2020. It publishes an independent, eight-point BeZero Carbon Rating (AAA to D) expressing the likelihood that a given carbon credit achieves a tonne of CO2e avoided or removed, alongside risk factor scores, summary analysis, methodology assessments and reference data across forestry, blue carbon, soil and agriculture, cookstoves, engineered removals and superpollutant projects. The BeZero Ratings API (v3, OAuth 2.0 client credentials) lets exchanges, marketplaces, brokers, data providers and corporate buyers pull ratings, project reference data and premium risk factor scores directly into their own platforms, and its ratings are distributed through Bloomberg, ICE, CUSIP and LSEG.
 
-The **BeZero Ratings API** (v3, OpenAPI 3.0.0, OAuth 2.0 client credentials) lets exchanges, marketplaces, brokers and data providers pull ratings, rated projects and premium risk factor scores into their own platforms.
+**Areas:** Company · Carbon Ratings · Carbon Markets · Climate · Sustainability · ESG · Ratings · Reference Data · Market Intelligence · Risk Analysis
 
-- Website: https://bezerocarbon.com/
-- API reference: https://api-docs.bezerocarbonmarkets.com/
-- Base URL: `https://api.bezerocarbonmarkets.com/v3`
-- Ratings platform: https://bezerocarbonmarkets.com/
-- GitHub: https://github.com/BeZeroCarbon
+## BeZero Carbon on APIs.io
+
+Everything profiled for BeZero Carbon is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/bezero-carbon/](https://apis.io/providers/bezero-carbon/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [BeZero Carbon Projects API](https://apis.io/apis/bezero-carbon/bezero-carbon-projects-api/) — The Projects API from BeZero Carbon — 1 operation(s) for projects.
+- [BeZero Carbon Ratings API](https://apis.io/apis/bezero-carbon/bezero-carbon-ratings-api/) — The Ratings API from BeZero Carbon — 3 operation(s) for ratings.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [bezero-ratings](https://apis.io/servers/bezero-carbon/bezero-ratings/)
+
+#### Collections (2)
+
+Postman and Open Collection request collections.
+
+- [BeZero Ratings Projects API](https://apis.io/collections/bezero-carbon/open-bezero-carbon-projects-api/)
+- [BeZero Ratings API](https://apis.io/collections/bezero-carbon/open-bezero-carbon-ratings-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Bezero Carbon Ratings Overlay](https://apis.io/overlays/bezero-carbon/bezero-carbon-ratings-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Bezero Carbon Authentication](https://apis.io/security/bezero-carbon/bezero-carbon-authentication/)
+- [Bezero Carbon Domain Security](https://apis.io/security/bezero-carbon/bezero-carbon-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Bezero Carbon Scopes](https://apis.io/scopes/bezero-carbon/bezero-carbon-scopes/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Bezero Carbon Rate Limits](https://apis.io/rate-limits/bezero-carbon/bezero-carbon-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://bezerocarbon.com/)
+- [Documentation](https://api-docs.bezerocarbonmarkets.com/)
+- [Getting started](https://api-docs.bezerocarbonmarkets.com/#section/Authentication-and-credential-provision)
+- [API reference](https://api-docs.bezerocarbonmarkets.com/)
+- [Sign up](https://bezerocarbonmarkets.com/)
+- [Blog](https://bezerocarbon.com/insights)
+- [Terms of service](https://legal.bezerocarbon.com/legal-hub/terms-of-use-976d0f8d)
+- [Privacy policy](https://legal.bezerocarbon.com/legal-hub/privacy-policy-b92ddd45)
+- [GitHub](https://github.com/BeZeroCarbon)
+
+## API Evangelist rating
+
+**Kin Score 42.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 55.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 31.6 |
+| Developer ergonomics | 53.0 |
+| Access clarity | 21.1 |
+
+**Agent readiness 39.6** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | na |
+| MCP Server | — |
+| Auth Clarity | negotiable (partial credit) |
+| Idempotency | na |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 34.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/bezero-carbon/](https://apis.io/providers/bezero-carbon/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for BeZero Carbon: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/bezero-carbon/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
